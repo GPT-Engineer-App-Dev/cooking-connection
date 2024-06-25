@@ -4,19 +4,23 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
+import { Rating } from "@/components/ui/rating";
 
 const Index = () => {
   const [title, setTitle] = useState("");
   const [instructions, setInstructions] = useState("");
+  const [rating, setRating] = useState(0);
+  const [recipes, setRecipes] = useState([]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (title && instructions) {
-      // Here you can handle the form submission, e.g., send it to a backend or store it locally
-      console.log("Recipe Submitted:", { title, instructions });
+      const newRecipe = { title, instructions, rating };
+      setRecipes([...recipes, newRecipe]);
       toast("Recipe submitted successfully!");
       setTitle("");
       setInstructions("");
+      setRating(0);
     } else {
       toast("Please fill in all fields.");
     }
@@ -43,10 +47,25 @@ const Index = () => {
               value={instructions} 
               onChange={(e) => setInstructions(e.target.value)} 
             />
+            <Rating value={rating} onChange={setRating} />
             <Button type="submit" variant="outline">Submit</Button>
           </form>
         </CardContent>
       </Card>
+
+      <div className="w-full max-w-md space-y-4">
+        {recipes.map((recipe, index) => (
+          <Card key={index}>
+            <CardHeader>
+              <CardTitle>{recipe.title}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p>{recipe.instructions}</p>
+              <Rating value={recipe.rating} readOnly />
+            </CardContent>
+          </Card>
+        ))}
+      </div>
     </div>
   );
 };
